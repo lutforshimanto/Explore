@@ -1,4 +1,9 @@
 'use client';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { setActiveTab } from '@/redux/tabs';
+import { RootState } from '@/redux/store';
+
 import FullwidthContainer from '@/components/common/containers/FullwidthContainer';
 import SectionContainer from '@/components/common/containers/SectionContainer';
 import PhotoCard from '@/components/PhotoCard/PhotoCard';
@@ -9,9 +14,7 @@ import { ActionSearchBar } from '@/components/ui/action-search-bar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { useQuery, useMutation } from '@tanstack/react-query';
-// import { RootState } from "@/redux/store";
-// import { useSelector } from "react-redux";
+import { useQuery } from '@tanstack/react-query';
 
 type Post = {
   userId: number;
@@ -29,22 +32,31 @@ type Photo = {
 };
 
 export async function fetchPosts(): Promise<Post[]> {
+  await new Promise(resolve => setTimeout(resolve, 5000));
   const res = await fetch('https://jsonplaceholder.typicode.com/posts');
   return res.json();
 }
 
 export async function fetchPhotos(): Promise<Photo[]> {
+  await new Promise(resolve => setTimeout(resolve, 5000));
   const res = await fetch('https://jsonplaceholder.typicode.com/photos');
   return res.json();
 }
 
 export default function HomePage() {
   // const { count } = useSelector((store: RootState) => store.counter.counter);
+  const dispatch = useDispatch();
+  const activeTab = useSelector((state: RootState) => state.tabs.activeTab);
+
+  const handleTabChange = (value: 'posts' | 'photos') => {
+    dispatch(setActiveTab(value));
+  };
+
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['posts'],
     queryFn: fetchPosts,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
+    // staleTime: 5 * 60 * 1000,
+    // gcTime: 30 * 60 * 1000,
   });
 
   const {
@@ -55,52 +67,9 @@ export default function HomePage() {
   } = useQuery({
     queryKey: ['photos'],
     queryFn: fetchPhotos,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
+    // staleTime: 5 * 60 * 1000,
+    // gcTime: 30 * 60 * 1000,
   });
-
-  // if (isLoading || isLoadingPhotos) {
-  //   return (
-  //     <FullwidthContainer className="bg-pink-200">
-  //       <SectionContainer className="bg-blue-200 dark:bg-slate-800 py-10 text-center">
-  //         <Tabs defaultValue="posts" className="bg-transparent">
-  //           <TabsList className="grid grid-cols-2 mb-4 w-full items-start bg-transparent">
-  //             <TabsTrigger
-  //               value="posts"
-  //               className="px-4 py-2 text-[10px] md:text-sm lg:text-sm font-medium text-[#959EA6] bg-transparent border-b-2 border-[#BBC6D2] hover:text-[#3B577B] hover:bg-gray-200 data-[state=active]:text-[#3B577B] data-[state=active]:border-[#3B577B] data-[state=active]:bg-transparent"
-  //             >
-  //               Posts
-  //             </TabsTrigger>
-  //             <TabsTrigger
-  //               value="photos"
-  //               className="px-4 py-2 text-[10px] md:text-sm lg:text-sm font-medium text-[#959EA6] bg-transparent border-b-2 border-[#BBC6D2] hover:text-[#3B577B] hover:bg-gray-200 data-[state=active]:text-[#3B577B] data-[state=active]:border-[#3B577B] data-[state=active]:bg-transparent"
-  //             >
-  //               Photos
-  //             </TabsTrigger>
-  //           </TabsList>
-
-  //           <TabsContent value="posts">
-  //             <ScrollArea className="h-[500px] rounded-md border m-2">
-  //               {[...Array(6)].map((_, index) => (
-  //                 <PostCardSkeleton key={index} />
-  //               ))}
-  //             </ScrollArea>
-  //           </TabsContent>
-
-  //           <TabsContent value="photos">
-  //             <ScrollArea className="h-[500px] rounded-md border m-2">
-  //               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  //                 {[...Array(6)].map((_, index) => (
-  //                   <PhotoCardSkeleton key={index} />
-  //                 ))}
-  //               </div>
-  //             </ScrollArea>
-  //           </TabsContent>
-  //         </Tabs>
-  //       </SectionContainer>
-  //     </FullwidthContainer>
-  //   );
-  // }
 
   if (isError || isErrorPhotos) {
     return (
@@ -117,7 +86,13 @@ export default function HomePage() {
     <>
       <FullwidthContainer className="bg-pink-200">
         <SectionContainer className="bg-blue-200 dark:bg-slate-800 py-10 text-center">
-          <Tabs defaultValue="posts" className="bg-transparent">
+          <Tabs
+            defaultValue={activeTab}
+            onValueChange={value =>
+              handleTabChange(value as 'posts' | 'photos')
+            }
+            className="bg-transparent"
+          >
             <TabsList className="grid grid-cols-2 mb-4 w-full items-start bg-transparent">
               <TabsTrigger
                 value="posts"
@@ -136,7 +111,7 @@ export default function HomePage() {
             <TabsContent value="posts">
               Enjoy the following posts:
               <ActionSearchBar />
-              {isLoading ? (
+              {isLoading && activeTab === 'posts' ? (
                 <ScrollArea className="h-[500px] rounded-md border m-2">
                   {[...Array(6)].map((_, index) => (
                     <PostCardSkeleton key={index} />
@@ -154,7 +129,7 @@ export default function HomePage() {
             <TabsContent value="photos">
               Enjoy the following photos:
               <ActionSearchBar />
-              {isLoadingPhotos ? (
+              {isLoadingPhotos && activeTab === 'photos' ? (
                 <ScrollArea className="h-[500px] rounded-md border m-2">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {[...Array(6)].map((_, index) => (

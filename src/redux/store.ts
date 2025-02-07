@@ -2,10 +2,12 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
 // -----o----- reducers -----o----- //
 import counterReducer from './counter';
+import tabsReducer from './tabs';
 // -----x----- reducers -----x----- //
 
 const rootReducer = combineReducers({
   counter: counterReducer,
+  tabs: tabsReducer,
 });
 
 const preloadedState = () => {
