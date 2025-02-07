@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -154,6 +154,8 @@ function ActionSearchBar({
   const [selectedAction, setSelectedAction] = useState<Action | null>(null);
   const debouncedQuery = useDebounce(query, 200);
 
+  const suggestionsRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!isFocused) {
       setResult(null);
@@ -236,6 +238,14 @@ function ActionSearchBar({
     setIsFocused(true);
   };
 
+  const handleBlur = (e: React.FocusEvent) => {
+    const relatedTarget = e.relatedTarget as Node;
+    if (suggestionsRef.current?.contains(relatedTarget)) {
+      return;
+    }
+    setTimeout(() => setIsFocused(false), 200);
+  };
+
   return (
     <div className="w-full max-w-xl mx-auto">
       <label
@@ -253,7 +263,7 @@ function ActionSearchBar({
               value={query}
               onChange={handleInputChange}
               onFocus={handleFocus}
-              onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+              onBlur={handleBlur}
               className="pl-3 pr-9 py-1.5 h-9 text-sm rounded-lg focus-visible:ring-offset-0"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4">
@@ -285,7 +295,10 @@ function ActionSearchBar({
         </div>
 
         {isFocused && result && !selectedAction && (
-          <div className="w-full max-w-sm absolute z-50 top-[36px]">
+          <div
+            ref={suggestionsRef}
+            className="w-full max-w-sm absolute z-50 top-[36px]"
+          >
             <AnimatePresence>
               <motion.div
                 className="w-full border border-neutral-200 rounded-md shadow-sm overflow-hidden dark:border-gray-800 bg-white dark:bg-black mt-1"

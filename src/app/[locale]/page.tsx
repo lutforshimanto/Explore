@@ -45,25 +45,43 @@ export async function fetchPhotos(): Promise<Photo[]> {
 }
 
 const transformPostsToActions = (posts: Post[]): Action[] => {
-  const postActions = posts.map(post => ({
+  const postActions: Action[] = posts.map(post => ({
     id: post.id.toString(),
     label: truncateText(post.title, 15),
     icon: <FileText className="h-4 w-4 text-blue-500" />,
     description: truncateText(post.body, 20),
-    type: 'posts' as 'posts',
+    type: 'posts' as const,
   }));
 
-  const defaultActions = [
-    {
-      id: 'photos',
-      label: 'View Photos',
-      icon: <Image className="h-4 w-4 text-green-500" />,
-      description: 'Switch to photos view',
-      type: 'photos' as 'photos',
-    },
-  ];
+  const viewPhotosAction: Action = {
+    id: 'photos',
+    label: 'View Photos',
+    icon: <Image className="h-4 w-4 text-green-500" />,
+    description: 'Switch to photos view',
+    type: 'photos' as const,
+  };
 
-  return [...postActions, ...defaultActions];
+  return [...postActions, viewPhotosAction];
+};
+
+const transformPhotosToActions = (photos: Photo[]): Action[] => {
+  const photoActions: Action[] = photos.slice(0, 100).map(photo => ({
+    id: photo.id.toString(),
+    label: truncateText(photo.title, 15),
+    icon: <Image className="h-4 w-4 text-green-500" />,
+    description: `Album ${photo.albumId}`,
+    type: 'photos' as const,
+  }));
+
+  const viewPostsAction: Action = {
+    id: 'posts',
+    label: 'View Posts',
+    icon: <FileText className="h-4 w-4 text-blue-500" />,
+    description: 'Switch to posts view',
+    type: 'posts' as const,
+  };
+
+  return [...photoActions, viewPostsAction];
 };
 
 const truncateText = (text: string, maxLength: number): string => {
@@ -85,7 +103,12 @@ export default function HomePage() {
     }
   };
 
-  const { data, isLoading, isError, error } = useQuery({
+  const {
+    data: posts,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ['posts'],
     queryFn: fetchPosts,
   });
@@ -100,7 +123,16 @@ export default function HomePage() {
     queryFn: fetchPhotos,
   });
 
-  const actions: Action[] = data ? transformPostsToActions(data) : [];
+  const getActions = (): Action[] => {
+    if (activeTab === 'posts' && posts) {
+      return transformPostsToActions(posts);
+    } else if (activeTab === 'photos' && photos) {
+      return transformPhotosToActions(photos);
+    }
+    return [];
+  };
+
+  const actions = getActions();
 
   if (isError || isErrorPhotos) {
     return (
@@ -154,7 +186,7 @@ export default function HomePage() {
                 </ScrollArea>
               ) : (
                 <ScrollArea className="h-[500px] rounded-md border m-2">
-                  {data
+                  {posts
                     ?.slice(0, 50)
                     .map((post: Post) => <PostCard post={post} />)}
                 </ScrollArea>
@@ -166,7 +198,7 @@ export default function HomePage() {
               <ActionSearchBar
                 onTabChange={handleTabChange}
                 activeTab={activeTab}
-                // actions={actions}
+                actions={actions}
               />
               {isLoadingPhotos && activeTab === 'photos' ? (
                 <ScrollArea className="h-[500px] rounded-md border m-2">
