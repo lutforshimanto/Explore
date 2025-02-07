@@ -10,9 +10,10 @@ import PhotoCard from '@/components/PhotoCard/PhotoCard';
 import PhotoCardSkeleton from '@/components/PhotoCard/PhotoCardSkeleton';
 import PostCard from '@/components/PostCard/PostCard';
 import PostCardSkeleton from '@/components/PostCard/PostCardSkeleton';
-import { ActionSearchBar } from '@/components/ui/action-search-bar';
+import { Action, ActionSearchBar } from '@/components/ui/action-search-bar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { FileText, Image } from 'lucide-react';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -73,6 +74,23 @@ export default function HomePage() {
     queryFn: fetchPhotos,
   });
 
+  const actions: Action[] = [
+    {
+      id: 'posts',
+      label: 'View Posts',
+      icon: <FileText className="h-4 w-4 text-blue-500" />,
+      description: 'Switch to posts view',
+      type: 'posts',
+    },
+    {
+      id: 'photos',
+      label: 'View Photos',
+      icon: <Image className="h-4 w-4 text-green-500" />,
+      description: 'Switch to photos view',
+      type: 'photos',
+    },
+  ];
+
   if (isError || isErrorPhotos) {
     return (
       <FullwidthContainer>
@@ -112,7 +130,11 @@ export default function HomePage() {
 
             <TabsContent value="posts">
               Enjoy the following posts:
-              <ActionSearchBar />
+              <ActionSearchBar
+                onTabChange={handleTabChange}
+                activeTab={activeTab}
+                actions={actions}
+              />
               {isLoading && activeTab === 'posts' ? (
                 <ScrollArea className="h-[500px] rounded-md border m-2">
                   {[...Array(6)].map((_, index) => (
@@ -130,7 +152,11 @@ export default function HomePage() {
 
             <TabsContent value="photos">
               Enjoy the following photos:
-              <ActionSearchBar />
+              <ActionSearchBar
+                onTabChange={handleTabChange}
+                activeTab={activeTab}
+                // actions={actions}
+              />
               {isLoadingPhotos && activeTab === 'photos' ? (
                 <ScrollArea className="h-[500px] rounded-md border m-2">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

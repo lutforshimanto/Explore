@@ -13,6 +13,8 @@ import {
   AudioLines,
 } from 'lucide-react';
 
+import { FileText, Image } from 'lucide-react';
+
 function useDebounce<T>(value: T, delay: number = 500): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
@@ -29,6 +31,21 @@ function useDebounce<T>(value: T, delay: number = 500): T {
   return debouncedValue;
 }
 
+interface ActionSearchBarProps {
+  onTabChange: (tab: 'posts' | 'photos') => void;
+  activeTab: 'posts' | 'photos';
+  actions?: Action[];
+}
+
+// export interface Action {
+//   id: string;
+//   label: string;
+//   icon: React.ReactNode;
+//   description?: string;
+//   short?: string;
+//   end?: string;
+// }
+
 export interface Action {
   id: string;
   label: string;
@@ -36,56 +53,99 @@ export interface Action {
   description?: string;
   short?: string;
   end?: string;
+  type: 'posts' | 'photos';
 }
 
 interface SearchResult {
   actions: Action[];
 }
 
-const allActions = [
+// const allActions = [
+//   {
+//     id: '1',
+//     label: 'Book tickets',
+//     icon: <PlaneTakeoff className="h-4 w-4 text-blue-500" />,
+//     description: 'Operator',
+//     short: '⌘K',
+//     end: 'Agent',
+//   },
+//   {
+//     id: '2',
+//     label: 'Summarize',
+//     icon: <BarChart2 className="h-4 w-4 text-orange-500" />,
+//     description: 'gpt-4o',
+//     short: '⌘cmd+p',
+//     end: 'Command',
+//   },
+//   {
+//     id: '3',
+//     label: 'Screen Studio',
+//     icon: <Video className="h-4 w-4 text-purple-500" />,
+//     description: 'gpt-4o',
+//     short: '',
+//     end: 'Application',
+//   },
+//   {
+//     id: '4',
+//     label: 'Talk to Jarvis',
+//     icon: <AudioLines className="h-4 w-4 text-green-500" />,
+//     description: 'gpt-4o voice',
+//     short: '',
+//     end: 'Active',
+//   },
+//   {
+//     id: '5',
+//     label: 'Translate',
+//     icon: <Globe className="h-4 w-4 text-blue-500" />,
+//     description: 'gpt-4o',
+//     short: '',
+//     end: 'Command',
+//   },
+// ];
+
+// const allActions: Action[] = [
+//   {
+//     id: 'posts',
+//     label: 'View Posts',
+//     icon: <FileText className="h-4 w-4 text-blue-500" />,
+//     description: 'Switch to posts view',
+//     short: '⌘P',
+//     end: 'Posts',
+//     type: 'posts',
+//   },
+//   {
+//     id: 'photos',
+//     label: 'View Photos',
+//     icon: <Image className="h-4 w-4 text-green-500" />,
+//     description: 'Switch to photos view',
+//     short: '⌘I',
+//     end: 'Photos',
+//     type: 'photos',
+//   },
+// ];
+
+const defaultActions: Action[] = [
   {
-    id: '1',
-    label: 'Book tickets',
-    icon: <PlaneTakeoff className="h-4 w-4 text-blue-500" />,
-    description: 'Operator',
-    short: '⌘K',
-    end: 'Agent',
+    id: 'posts',
+    label: 'Default View Posts',
+    icon: <FileText className="h-4 w-4 text-blue-500" />,
+    description: 'Switch to posts view',
+    type: 'posts',
   },
   {
-    id: '2',
-    label: 'Summarize',
-    icon: <BarChart2 className="h-4 w-4 text-orange-500" />,
-    description: 'gpt-4o',
-    short: '⌘cmd+p',
-    end: 'Command',
-  },
-  {
-    id: '3',
-    label: 'Screen Studio',
-    icon: <Video className="h-4 w-4 text-purple-500" />,
-    description: 'gpt-4o',
-    short: '',
-    end: 'Application',
-  },
-  {
-    id: '4',
-    label: 'Talk to Jarvis',
-    icon: <AudioLines className="h-4 w-4 text-green-500" />,
-    description: 'gpt-4o voice',
-    short: '',
-    end: 'Active',
-  },
-  {
-    id: '5',
-    label: 'Translate',
-    icon: <Globe className="h-4 w-4 text-blue-500" />,
-    description: 'gpt-4o',
-    short: '',
-    end: 'Command',
+    id: 'photos',
+    label: 'Default View Photos',
+    icon: <Image className="h-4 w-4 text-green-500" />,
+    description: 'Switch to photos view',
+    type: 'photos',
   },
 ];
 
-function ActionSearchBar({ actions = allActions }: { actions?: Action[] }) {
+function ActionSearchBar({
+  onTabChange,
+  activeTab,
+  actions = defaultActions,
+}: ActionSearchBarProps) {
   const [query, setQuery] = useState('');
   const [result, setResult] = useState<SearchResult | null>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -100,22 +160,29 @@ function ActionSearchBar({ actions = allActions }: { actions?: Action[] }) {
     }
 
     if (!debouncedQuery) {
-      setResult({ actions: allActions });
+      setResult({ actions });
       return;
     }
 
     const normalizedQuery = debouncedQuery.toLowerCase().trim();
-    const filteredActions = allActions.filter(action => {
+    const filteredActions = actions.filter(action => {
       const searchableText = action.label.toLowerCase();
       return searchableText.includes(normalizedQuery);
     });
 
     setResult({ actions: filteredActions });
-  }, [debouncedQuery, isFocused]);
+  }, [debouncedQuery, isFocused, actions]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
     setIsTyping(true);
+  };
+
+  const handleActionSelect = (action: Action) => {
+    setSelectedAction(action);
+    setQuery(action.label);
+    onTabChange(action.type);
+    setIsFocused(false);
   };
 
   const container = {
@@ -233,10 +300,7 @@ function ActionSearchBar({ actions = allActions }: { actions?: Action[] }) {
                       className="px-3 py-2 flex items-center justify-between hover:bg-gray-200 dark:hover:bg-zinc-900  cursor-pointer rounded-md"
                       variants={item}
                       layout
-                      onClick={() => {
-                        setSelectedAction(action);
-                        setQuery(action.label);
-                      }}
+                      onClick={() => handleActionSelect(action)}
                     >
                       <div className="flex items-center gap-2 justify-between">
                         <div className="flex items-center gap-2">
