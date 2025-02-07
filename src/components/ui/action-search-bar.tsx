@@ -155,6 +155,7 @@ function ActionSearchBar({
   const debouncedQuery = useDebounce(query, 200);
 
   const suggestionsRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isFocused) {
@@ -238,13 +239,21 @@ function ActionSearchBar({
     setIsFocused(true);
   };
 
-  const handleBlur = (e: React.FocusEvent) => {
-    const relatedTarget = e.relatedTarget as Node;
-    if (suggestionsRef.current?.contains(relatedTarget)) {
-      return;
-    }
-    setTimeout(() => setIsFocused(false), 200);
-  };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        !inputRef.current?.contains(event.target as Node) &&
+        !suggestionsRef.current?.contains(event.target as Node)
+      ) {
+        setIsFocused(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="w-full max-w-xl mx-auto">
@@ -258,12 +267,13 @@ function ActionSearchBar({
         <div className="w-full max-w-sm sticky top-0 z-10 pb-1 dark:bg-neutral-950">
           <div className="relative">
             <Input
+              ref={inputRef}
               type="text"
               placeholder="What's up?"
               value={query}
               onChange={handleInputChange}
               onFocus={handleFocus}
-              onBlur={handleBlur}
+              // onBlur={handleBlur}
               className="pl-3 pr-9 py-1.5 h-9 text-sm rounded-lg focus-visible:ring-offset-0"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4">
