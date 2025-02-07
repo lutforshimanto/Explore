@@ -12,6 +12,7 @@ import {
   PlaneTakeoff,
   AudioLines,
 } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { FileText, Image } from 'lucide-react';
 
@@ -237,14 +238,14 @@ function ActionSearchBar({
 
   return (
     <div className="w-full max-w-xl mx-auto">
-      <div className="relative flex flex-col justify-start items-center min-h-[300px]">
-        <div className="w-full max-w-sm sticky top-0 bg-tranparent z-10 pt-4 pb-1 dark:bg-neutral-950">
-          <label
-            className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block"
-            htmlFor="search"
-          >
-            Search Commands
-          </label>
+      <label
+        className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block"
+        htmlFor="search"
+      >
+        Search Commands
+      </label>
+      <div className="relative flex flex-col justify-start items-center">
+        <div className="w-full max-w-sm sticky top-0 z-10 pb-1 dark:bg-neutral-950">
           <div className="relative">
             <Input
               type="text"
@@ -284,46 +285,48 @@ function ActionSearchBar({
         </div>
 
         {isFocused && result && !selectedAction && (
-          <div className="w-full max-w-sm">
+          <div className="w-full max-w-sm absolute z-50 top-[36px]">
             <AnimatePresence>
               <motion.div
-                className="w-full border border-neutral-200 rounded-md shadow-sm overflow-hidden dark:border-gray-800 bg-white dark:bg-black mt-1 dark:border-neutral-800"
+                className="w-full border border-neutral-200 rounded-md shadow-sm overflow-hidden dark:border-gray-800 bg-white dark:bg-black mt-1"
                 variants={container}
                 initial="hidden"
                 animate="show"
                 exit="exit"
               >
-                <motion.ul>
-                  {result.actions.map(action => (
-                    <motion.li
-                      key={action.id}
-                      className="px-3 py-2 flex items-center justify-between hover:bg-gray-200 dark:hover:bg-zinc-900  cursor-pointer rounded-md"
-                      variants={item}
-                      layout
-                      onClick={() => handleActionSelect(action)}
-                    >
-                      <div className="flex items-center gap-2 justify-between">
+                <ScrollArea className="h-[150px]">
+                  <motion.ul>
+                    {result.actions.map(action => (
+                      <motion.li
+                        key={action.id}
+                        className="px-3 py-2 flex items-center justify-between hover:bg-gray-200 dark:hover:bg-zinc-900  cursor-pointer rounded-md"
+                        variants={item}
+                        layout
+                        onClick={() => handleActionSelect(action)}
+                      >
+                        <div className="flex items-center gap-2 justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-500">{action.icon}</span>
+                            <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                              {action.label}
+                            </span>
+                            <span className="text-xs text-gray-400">
+                              {action.description}
+                            </span>
+                          </div>
+                        </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-gray-500">{action.icon}</span>
-                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                            {action.label}
-                          </span>
                           <span className="text-xs text-gray-400">
-                            {action.description}
+                            {action.short}
+                          </span>
+                          <span className="text-xs text-gray-400 text-right">
+                            {action.end}
                           </span>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">
-                          {action.short}
-                        </span>
-                        <span className="text-xs text-gray-400 text-right">
-                          {action.end}
-                        </span>
-                      </div>
-                    </motion.li>
-                  ))}
-                </motion.ul>
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+                </ScrollArea>
                 <div className="mt-2 px-3 py-2 border-t border-gray-100 dark:border-gray-800">
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <span>Press ⌘K to open commands</span>

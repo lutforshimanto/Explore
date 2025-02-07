@@ -20,7 +20,7 @@ export default function Navbar() {
 
   return (
     <div className="relative w-full">
-      <nav className="fixed top-0 w-full bg-blue-100 dark:bg-slate-800 shadow-md z-50 left-0 right-0">
+      <nav className="fixed top-0 w-full bg-blue-100 dark:bg-slate-800 shadow-md z-[999] left-0 right-0">
         <SectionContainer>
           <div className="flex items-center justify-between h-16">
             <div className="flex-shrink-0">

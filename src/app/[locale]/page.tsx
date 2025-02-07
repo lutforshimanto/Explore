@@ -44,6 +44,32 @@ export async function fetchPhotos(): Promise<Photo[]> {
   return res.json();
 }
 
+const transformPostsToActions = (posts: Post[]): Action[] => {
+  const postActions = posts.map(post => ({
+    id: post.id.toString(),
+    label: truncateText(post.title, 15),
+    icon: <FileText className="h-4 w-4 text-blue-500" />,
+    description: truncateText(post.body, 20),
+    type: 'posts' as 'posts',
+  }));
+
+  const defaultActions = [
+    {
+      id: 'photos',
+      label: 'View Photos',
+      icon: <Image className="h-4 w-4 text-green-500" />,
+      description: 'Switch to photos view',
+      type: 'photos' as 'photos',
+    },
+  ];
+
+  return [...postActions, ...defaultActions];
+};
+
+const truncateText = (text: string, maxLength: number): string => {
+  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+};
+
 export default function HomePage() {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
@@ -74,22 +100,7 @@ export default function HomePage() {
     queryFn: fetchPhotos,
   });
 
-  const actions: Action[] = [
-    {
-      id: 'posts',
-      label: 'View Posts',
-      icon: <FileText className="h-4 w-4 text-blue-500" />,
-      description: 'Switch to posts view',
-      type: 'posts',
-    },
-    {
-      id: 'photos',
-      label: 'View Photos',
-      icon: <Image className="h-4 w-4 text-green-500" />,
-      description: 'Switch to photos view',
-      type: 'photos',
-    },
-  ];
+  const actions: Action[] = data ? transformPostsToActions(data) : [];
 
   if (isError || isErrorPhotos) {
     return (
