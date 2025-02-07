@@ -14,7 +14,7 @@ import { ActionSearchBar } from '@/components/ui/action-search-bar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 type Post = {
   userId: number;
@@ -44,19 +44,23 @@ export async function fetchPhotos(): Promise<Photo[]> {
 }
 
 export default function HomePage() {
-  // const { count } = useSelector((store: RootState) => store.counter.counter);
+  const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const activeTab = useSelector((state: RootState) => state.tabs.activeTab);
 
   const handleTabChange = (value: 'posts' | 'photos') => {
     dispatch(setActiveTab(value));
+
+    if (value === 'posts') {
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    } else {
+      queryClient.invalidateQueries({ queryKey: ['photos'] });
+    }
   };
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['posts'],
     queryFn: fetchPosts,
-    // staleTime: 5 * 60 * 1000,
-    // gcTime: 30 * 60 * 1000,
   });
 
   const {
@@ -67,8 +71,6 @@ export default function HomePage() {
   } = useQuery({
     queryKey: ['photos'],
     queryFn: fetchPhotos,
-    // staleTime: 5 * 60 * 1000,
-    // gcTime: 30 * 60 * 1000,
   });
 
   if (isError || isErrorPhotos) {

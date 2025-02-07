@@ -11,6 +11,7 @@ import { SideAd } from '@/components/common/blocks/ads/SideAds';
 
 import ReduxProvider from '../../../providers/redux';
 import QueryProvider from '@/components/QueryProvider/QueryProvider';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export default async function RootLayout({
   children,
@@ -34,6 +35,7 @@ export default async function RootLayout({
               </NextIntlClientProvider>
             </ThemeProvider>
           </ReduxProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryProvider>
       </body>
     </html>
