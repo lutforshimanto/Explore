@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FileText, Image } from 'lucide-react';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 
 type Post = {
   userId: number;
@@ -44,8 +45,17 @@ export async function fetchPhotos(): Promise<Photo[]> {
   return res.json();
 }
 
-const transformPostsToActions = (posts: Post[]): Action[] => {
-  const postActions: Action[] = posts.map(post => ({
+const transformPostsToActions = (
+  posts: Post[],
+  searchQuery: string
+): Action[] => {
+  const filteredPosts = posts.filter(
+    post =>
+      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.body.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const postActions: Action[] = filteredPosts.map(post => ({
     id: post.id.toString(),
     label: truncateText(post.title, 15),
     icon: <FileText className="h-4 w-4 text-blue-500" />,
@@ -64,8 +74,15 @@ const transformPostsToActions = (posts: Post[]): Action[] => {
   return [...postActions, viewPhotosAction];
 };
 
-const transformPhotosToActions = (photos: Photo[]): Action[] => {
-  const photoActions: Action[] = photos.slice(0, 100).map(photo => ({
+const transformPhotosToActions = (
+  photos: Photo[],
+  searchQuery: string
+): Action[] => {
+  const filteredPhotos = photos.filter(photo =>
+    photo.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const photoActions: Action[] = filteredPhotos.slice(0, 100).map(photo => ({
     id: photo.id.toString(),
     label: truncateText(photo.title, 15),
     icon: <Image className="h-4 w-4 text-green-500" />,
@@ -92,6 +109,7 @@ export default function HomePage() {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const activeTab = useSelector((state: RootState) => state.tabs.activeTab);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleTabChange = (value: 'posts' | 'photos') => {
     dispatch(setActiveTab(value));
@@ -125,14 +143,30 @@ export default function HomePage() {
 
   const getActions = (): Action[] => {
     if (activeTab === 'posts' && posts) {
-      return transformPostsToActions(posts);
+      return transformPostsToActions(posts, searchQuery);
     } else if (activeTab === 'photos' && photos) {
-      return transformPhotosToActions(photos);
+      return transformPhotosToActions(photos, searchQuery);
+    }
+    return [];
+  };
+
+  const getFilteredContent = () => {
+    if (activeTab === 'posts' && posts) {
+      return posts.filter(
+        post =>
+          post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          post.body.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    } else if (activeTab === 'photos' && photos) {
+      return photos.filter(photo =>
+        photo.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     }
     return [];
   };
 
   const actions = getActions();
+  const filteredContent = getFilteredContent();
 
   if (isError || isErrorPhotos) {
     return (
@@ -177,6 +211,7 @@ export default function HomePage() {
                 onTabChange={handleTabChange}
                 activeTab={activeTab}
                 actions={actions}
+                onSearch={setSearchQuery}
               />
               {isLoading && activeTab === 'posts' ? (
                 <ScrollArea className="h-[500px] rounded-md border m-2">
@@ -186,9 +221,11 @@ export default function HomePage() {
                 </ScrollArea>
               ) : (
                 <ScrollArea className="h-[500px] rounded-md border m-2">
-                  {posts
-                    ?.slice(0, 50)
-                    .map((post: Post) => <PostCard post={post} />)}
+                  {(filteredContent as Post[])
+                    .slice(0, 50)
+                    .map((post: Post) => (
+                      <PostCard key={post.id} post={post} />
+                    ))}
                 </ScrollArea>
               )}
             </TabsContent>
@@ -199,6 +236,7 @@ export default function HomePage() {
                 onTabChange={handleTabChange}
                 activeTab={activeTab}
                 actions={actions}
+                onSearch={setSearchQuery}
               />
               {isLoadingPhotos && activeTab === 'photos' ? (
                 <ScrollArea className="h-[500px] rounded-md border m-2">
@@ -211,9 +249,9 @@ export default function HomePage() {
               ) : (
                 <ScrollArea className="h-[500px] rounded-md border m-2">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-                    {photos
-                      ?.slice(0, 50)
-                      .map(photo => <PhotoCard key={photo.id} photo={photo} />)}
+                    {(filteredContent as Photo[]).slice(0, 50).map(photo => (
+                      <PhotoCard key={photo.id} photo={photo} />
+                    ))}
                   </div>
                 </ScrollArea>
               )}

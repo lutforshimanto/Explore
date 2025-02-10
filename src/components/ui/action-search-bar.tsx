@@ -3,18 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Search,
-  Send,
-  BarChart2,
-  Globe,
-  Video,
-  PlaneTakeoff,
-  AudioLines,
-} from 'lucide-react';
+import { Search, Send } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-
-import { FileText, Image } from 'lucide-react';
 
 function useDebounce<T>(value: T, delay: number = 500): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -36,16 +26,8 @@ interface ActionSearchBarProps {
   onTabChange: (tab: 'posts' | 'photos') => void;
   activeTab: 'posts' | 'photos';
   actions?: Action[];
+  onSearch: (query: string) => void;
 }
-
-// export interface Action {
-//   id: string;
-//   label: string;
-//   icon: React.ReactNode;
-//   description?: string;
-//   short?: string;
-//   end?: string;
-// }
 
 export interface Action {
   id: string;
@@ -61,96 +43,14 @@ interface SearchResult {
   actions: Action[];
 }
 
-// const allActions = [
-//   {
-//     id: '1',
-//     label: 'Book tickets',
-//     icon: <PlaneTakeoff className="h-4 w-4 text-blue-500" />,
-//     description: 'Operator',
-//     short: '⌘K',
-//     end: 'Agent',
-//   },
-//   {
-//     id: '2',
-//     label: 'Summarize',
-//     icon: <BarChart2 className="h-4 w-4 text-orange-500" />,
-//     description: 'gpt-4o',
-//     short: '⌘cmd+p',
-//     end: 'Command',
-//   },
-//   {
-//     id: '3',
-//     label: 'Screen Studio',
-//     icon: <Video className="h-4 w-4 text-purple-500" />,
-//     description: 'gpt-4o',
-//     short: '',
-//     end: 'Application',
-//   },
-//   {
-//     id: '4',
-//     label: 'Talk to Jarvis',
-//     icon: <AudioLines className="h-4 w-4 text-green-500" />,
-//     description: 'gpt-4o voice',
-//     short: '',
-//     end: 'Active',
-//   },
-//   {
-//     id: '5',
-//     label: 'Translate',
-//     icon: <Globe className="h-4 w-4 text-blue-500" />,
-//     description: 'gpt-4o',
-//     short: '',
-//     end: 'Command',
-//   },
-// ];
-
-// const allActions: Action[] = [
-//   {
-//     id: 'posts',
-//     label: 'View Posts',
-//     icon: <FileText className="h-4 w-4 text-blue-500" />,
-//     description: 'Switch to posts view',
-//     short: '⌘P',
-//     end: 'Posts',
-//     type: 'posts',
-//   },
-//   {
-//     id: 'photos',
-//     label: 'View Photos',
-//     icon: <Image className="h-4 w-4 text-green-500" />,
-//     description: 'Switch to photos view',
-//     short: '⌘I',
-//     end: 'Photos',
-//     type: 'photos',
-//   },
-// ];
-
-const defaultActions: Action[] = [
-  {
-    id: 'posts',
-    label: 'Default View Posts',
-    icon: <FileText className="h-4 w-4 text-blue-500" />,
-    description: 'Switch to posts view',
-    type: 'posts',
-  },
-  {
-    id: 'photos',
-    label: 'Default View Photos',
-    icon: <Image className="h-4 w-4 text-green-500" />,
-    description: 'Switch to photos view',
-    type: 'photos',
-  },
-];
-
 function ActionSearchBar({
   onTabChange,
-  activeTab,
-  actions = defaultActions,
+  actions = [],
+  onSearch,
 }: ActionSearchBarProps) {
   const [query, setQuery] = useState('');
   const [result, setResult] = useState<SearchResult | null>(null);
   const [isFocused, setIsFocused] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
   const [selectedAction, setSelectedAction] = useState<Action | null>(null);
   const debouncedQuery = useDebounce(query, 200);
 
@@ -178,8 +78,9 @@ function ActionSearchBar({
   }, [debouncedQuery, isFocused, actions]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-    setIsTyping(true);
+    const newQuery = e.target.value;
+    setQuery(newQuery);
+    onSearch(newQuery);
   };
 
   const handleActionSelect = (action: Action) => {
@@ -233,7 +134,6 @@ function ActionSearchBar({
     },
   };
 
-  // Reset selectedAction when focusing the input
   const handleFocus = () => {
     setSelectedAction(null);
     setIsFocused(true);
@@ -273,7 +173,6 @@ function ActionSearchBar({
               value={query}
               onChange={handleInputChange}
               onFocus={handleFocus}
-              // onBlur={handleBlur}
               className="pl-3 pr-9 py-1.5 h-9 text-sm rounded-lg focus-visible:ring-offset-0"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4">
