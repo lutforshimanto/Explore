@@ -45,6 +45,10 @@ export async function fetchPhotos(): Promise<Photo[]> {
   return res.json();
 }
 
+const truncateText = (text: string, maxLength: number): string => {
+  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+};
+
 const transformPostsToActions = (
   posts: Post[],
   searchQuery: string
@@ -99,10 +103,6 @@ const transformPhotosToActions = (
   };
 
   return [...photoActions, viewPostsAction];
-};
-
-const truncateText = (text: string, maxLength: number): string => {
-  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 };
 
 export default function HomePage() {
