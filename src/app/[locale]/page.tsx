@@ -17,6 +17,7 @@ import { FileText, Image } from 'lucide-react';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import Paginate from '@/components/common/pagination/Paginate';
 
 type Post = {
   userId: number;
@@ -110,6 +111,11 @@ export default function HomePage() {
   const dispatch = useDispatch();
   const activeTab = useSelector((state: RootState) => state.tabs.activeTab);
   const [searchQuery, setSearchQuery] = useState('');
+  const [itemsPerPage, setItemsPerPage] = useState<number>(6);
+
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(parseInt(value));
+  };
 
   const handleTabChange = (value: 'posts' | 'photos') => {
     dispatch(setActiveTab(value));
@@ -161,6 +167,15 @@ export default function HomePage() {
       return photos.filter(photo =>
         photo.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
+    }
+    return [];
+  };
+
+  const allData = () => {
+    if (activeTab === 'posts' && posts) {
+      return posts;
+    } else if (activeTab === 'photos' && photos) {
+      return photos;
     }
     return [];
   };
@@ -257,6 +272,16 @@ export default function HomePage() {
               )}
             </TabsContent>
           </Tabs>
+        </SectionContainer>
+        <SectionContainer>
+          <Paginate
+            activeTab={activeTab}
+            isLoading={isLoading}
+            isLoadingPhotos={isLoadingPhotos}
+            filteredContent={allData()}
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
         </SectionContainer>
       </FullwidthContainer>
     </>

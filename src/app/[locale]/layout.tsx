@@ -20,7 +20,7 @@ export default async function RootLayout({
   const messages = await getMessages();
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className="flex flex-col items-center justify-center w-full">
+      <body className="flex flex-col items-center justify-center w-screen">
         <QueryProvider>
           <ReduxProvider>
             <ThemeProvider attribute="class" defaultTheme="system">
