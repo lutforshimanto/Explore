@@ -18,6 +18,7 @@ import { FileText, Image } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import Paginate from '@/components/common/pagination/Paginate';
+import { api } from '@/lib/api';
 
 type Post = {
   userId: number;
@@ -36,14 +37,14 @@ type Photo = {
 
 export async function fetchPosts(): Promise<Post[]> {
   await new Promise(resolve => setTimeout(resolve, 5000));
-  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
-  return res.json();
+  const response = await api.get<Post[]>('/posts');
+  return response.data;
 }
 
 export async function fetchPhotos(): Promise<Photo[]> {
   await new Promise(resolve => setTimeout(resolve, 5000));
-  const res = await fetch('https://jsonplaceholder.typicode.com/photos');
-  return res.json();
+  const response = await api.get<Photo[]>('/photos');
+  return response.data;
 }
 
 const truncateText = (text: string, maxLength: number): string => {
@@ -63,7 +64,7 @@ const transformPostsToActions = (
   const postActions: Action[] = filteredPosts.map(post => ({
     id: post.id.toString(),
     label: truncateText(post.title, 15),
-    icon: <FileText className="h-4 w-4 text-blue-500" />,
+    icon: <FileText className="h-4 w-4 text-blue-500" aria-label="File icon" />,
     description: truncateText(post.body, 20),
     type: 'posts' as const,
   }));
@@ -71,7 +72,7 @@ const transformPostsToActions = (
   const viewPhotosAction: Action = {
     id: 'photos',
     label: 'View Photos',
-    icon: <Image className="h-4 w-4 text-green-500" />,
+    icon: <Image className="h-4 w-4 text-green-500" aria-label="File icon" />,
     description: 'Switch to photos view',
     type: 'photos' as const,
   };
@@ -90,7 +91,7 @@ const transformPhotosToActions = (
   const photoActions: Action[] = filteredPhotos.slice(0, 100).map(photo => ({
     id: photo.id.toString(),
     label: truncateText(photo.title, 15),
-    icon: <Image className="h-4 w-4 text-green-500" />,
+    icon: <Image className="h-4 w-4 text-green-500" aria-label="Photos icon" />,
     description: `Album ${photo.albumId}`,
     type: 'photos' as const,
   }));
@@ -98,7 +99,7 @@ const transformPhotosToActions = (
   const viewPostsAction: Action = {
     id: 'posts',
     label: 'View Posts',
-    icon: <FileText className="h-4 w-4 text-blue-500" />,
+    icon: <FileText className="h-4 w-4 text-blue-500" aria-label="File icon" />,
     description: 'Switch to posts view',
     type: 'posts' as const,
   };
@@ -273,7 +274,10 @@ export default function HomePage() {
             </TabsContent>
           </Tabs>
         </SectionContainer>
-        <SectionContainer>
+        <SectionContainer className="bg-blue-200 dark:bg-slate-800 py-10 text-center">
+          <h2 className="flex justify-start items-center p-2">
+            All {activeTab === 'posts' ? 'Posts' : 'Photos'}:
+          </h2>
           <Paginate
             activeTab={activeTab}
             isLoading={isLoading}

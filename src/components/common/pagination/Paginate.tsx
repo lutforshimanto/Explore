@@ -38,7 +38,7 @@ interface PaginatedContentProps {
   isLoadingPhotos: boolean;
   filteredContent: (Post | Photo)[];
   itemsPerPage: number;
-  onItemsPerPageChange?: (value: string) => void;
+  onItemsPerPageChange: (itemsPerPage: string) => void;
 }
 
 const Paginate: React.FC<PaginatedContentProps> = ({
@@ -58,10 +58,10 @@ const Paginate: React.FC<PaginatedContentProps> = ({
     setCurrentPage(selected);
   };
 
-  const handleItemsPerPage = (value: string) => {
-    setItemsPerPageState(value);
-    setCurrentPage(0); // Reset to first page when changing items per page
-    onItemsPerPageChange?.(value);
+  const handleItemsPerPage = (itemsPerPage: string) => {
+    setItemsPerPageState(itemsPerPage);
+    setCurrentPage(0);
+    onItemsPerPageChange(itemsPerPage);
   };
 
   const getPaginatedData = () => {
