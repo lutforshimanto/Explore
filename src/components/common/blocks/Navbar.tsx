@@ -8,6 +8,7 @@ import LanguageSwitcher from '../core/LanguageSwitcher';
 import Hamburger from '../core/Hamburger';
 import ThemeSwitcher from '../core/ThemeSwitcher'; // Relative imports
 import SectionContainer from '../containers/SectionContainer';
+import { Button } from '@/components/ui/button';
 
 export default function Navbar() {
   const t = useTranslations('Navbar');
@@ -47,6 +48,16 @@ export default function Navbar() {
             </div>
 
             <div className="flex gap-2 items-center">
+              <Link href="/auth/signin">
+                <Button variant="outline" size="sm">
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/auth/signup">
+                <Button variant="outline" size="sm">
+                  Sign Up
+                </Button>
+              </Link>
               <ThemeSwitcher />
               <LanguageSwitcher />
               <Hamburger />
