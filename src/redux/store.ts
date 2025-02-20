@@ -3,11 +3,15 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 // -----o----- reducers -----o----- //
 import counterReducer from './counter';
 import tabsReducer from './tabs';
+import newsletterHtmlReducer from './newsletterhtml';
+import uploadedFilesReducer from './uploaded-files';
 // -----x----- reducers -----x----- //
 
 const rootReducer = combineReducers({
   counter: counterReducer,
   tabs: tabsReducer,
+  newsletterHtml: newsletterHtmlReducer,
+  uploadedFiles: uploadedFilesReducer,
 });
 
 const preloadedState = () => {
