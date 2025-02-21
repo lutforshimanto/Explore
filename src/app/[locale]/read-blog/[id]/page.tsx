@@ -5,8 +5,8 @@ import { useParams } from 'next/navigation';
 import axios from 'axios';
 import FullwidthContainer from '@/components/common/containers/FullwidthContainer';
 import SectionContainer from '@/components/common/containers/SectionContainer';
-import Cover from '@/components/Cover';
 import Viewer from '../Viewer';
+import ViewCover from '../ViewCover';
 
 interface Newsletter {
   id: string;
@@ -50,15 +50,15 @@ const NewsletterDetailPage: React.FC = () => {
   }
 
   return (
-    <FullwidthContainer>
-      <SectionContainer>
-        <div className="mb-4">
-          <Cover url={newsletter.coverPhoto} setUrl={() => {}} />
-        </div>
+    <div>
+      <div className="mb-4">
+        <ViewCover url={newsletter.coverPhoto} />
+      </div>
+      <div className="flex flex-col px-24 py-10 w-full">
         <h1 className="text-3xl font-bold mb-4">{newsletter.title}</h1>
         <Viewer content={newsletter.content} />
-      </SectionContainer>
-    </FullwidthContainer>
+      </div>
+    </div>
   );
 };
 
