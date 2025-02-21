@@ -2,22 +2,33 @@
 
 import Cover from '@/components/Cover';
 import dynamic from 'next/dynamic';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-
 import { useDispatch, useSelector } from 'react-redux';
-import { setHtml } from '@/redux/newsletterhtml';
+import axios from 'axios';
+
+import { setTitle, setCoverPhoto, resetHtml } from '@/redux/newsletterhtml';
 import type { RootState } from '@/redux/store';
 
 const WriteBlogPage = () => {
-  const [coverUrl, setCoverUrl] = useState<string>();
+  const { html, title, coverPhoto } = useSelector(
+    (state: RootState) => state.newsletterHtml
+  );
+  const [coverUrl, setCoverUrl] = useState<string>(coverPhoto || '');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [resetCount, setResetCount] = useState(0);
+
   const dispatch = useDispatch();
-  const { html } = useSelector((state: RootState) => state.newsletterHtml);
 
   //   const enableCover = async () => {
   //     const randomImage = await fetch('https://source.unsplash.com/random');
   //     setCoverUrl(randomImage.url);
   //   };
+
+  useEffect(() => {
+    setCoverUrl(coverPhoto || '');
+  }, [coverPhoto]);
 
   const enableCover = () => {
     setCoverUrl(
@@ -25,10 +36,50 @@ const WriteBlogPage = () => {
     );
   };
 
+  const saveArticle = async () => {
+    setLoading(true);
+    setSuccess(false);
+
+    try {
+      const articleData = {
+        title,
+        coverPhoto: coverUrl,
+        content: html,
+      };
+
+      console.log('Saving article:', articleData);
+
+      await axios.post('http://localhost:3000/api/newsletters', articleData);
+
+      setSuccess(true);
+      // dispatch(resetHtml());
+    } catch (error) {
+      console.error('Failed to save article:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReset = useCallback(() => {
+    dispatch(resetHtml());
+    setResetCount(prev => prev + 1); // Increment to force Editor remount
+  }, [dispatch]);
+
   const Editor = useMemo(
     () => dynamic(() => import('@/components/Editor'), { ssr: false }),
     []
   );
+
+  useEffect(() => {
+    dispatch(setCoverPhoto(coverUrl));
+  }, [coverUrl]);
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => setSuccess(false), 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
 
   return (
     <div>
@@ -48,9 +99,39 @@ const WriteBlogPage = () => {
           <TextareaAutosize
             placeholder="Untitled"
             className="w-full py-2 resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none leading-none"
+            value={title || ''}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+              dispatch(setTitle(e.target.value));
+            }}
           />
         </div>
-        <Editor />
+        <Editor key={resetCount} />
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={handleReset}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Reset Editor
+          </button>
+          <button
+            onClick={() => saveArticle()}
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+          >
+            Save Article
+          </button>
+        </div>
+        {success && (
+          <div
+            className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4"
+            role="alert"
+          >
+            <strong className="font-bold">Success!</strong>
+            <span className="block sm:inline">
+              {' '}
+              Your article has been saved.
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
