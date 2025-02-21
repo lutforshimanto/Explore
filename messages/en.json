@@ -6,7 +6,9 @@
   "Navbar": {
     "home": "Home",
     "about": "About",
-    "contact": "Contact"
+    "contact": "Contact",
+    "write": "Write Blog",
+    "read": "Read Blog"
   },
   "Contents": {
     "mainContainer": "Main Container",
