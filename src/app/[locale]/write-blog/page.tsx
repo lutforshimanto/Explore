@@ -76,7 +76,7 @@ const WriteBlogPage = () => {
   }, [success]);
 
   return (
-    <div>
+    <div className="mb-4">
       <Cover url={coverUrl} setUrl={setCoverUrl} />
       <div className="flex flex-col px-24 py-10 w-full">
         <div className="group flex flex-col gap-2">

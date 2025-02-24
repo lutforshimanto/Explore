@@ -3,10 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
-import FullwidthContainer from '@/components/common/containers/FullwidthContainer';
-import SectionContainer from '@/components/common/containers/SectionContainer';
 import Viewer from '../Viewer';
 import ViewCover from '../ViewCover';
+import NewsletterSkeleton from '../NewsletterSkeleton';
 
 interface Newsletter {
   id: string;
@@ -42,7 +41,7 @@ const NewsletterDetailPage: React.FC = () => {
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <NewsletterSkeleton />;
   }
 
   if (!newsletter) {

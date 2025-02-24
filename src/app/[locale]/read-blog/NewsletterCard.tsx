@@ -29,12 +29,20 @@ const NewsletterCard: React.FC<NewsletterCardProps> = ({
         Last updated: {new Date(newsletter.createdAt).toLocaleDateString()}
       </p>
       <div className="flex justify-between">
-        <Link
-          href={`/read-blog/${newsletter.id}`}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md"
-        >
-          View Details
-        </Link>
+        <div className="space-x-4">
+          <Link
+            href={`/read-blog/${newsletter.id}`}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md"
+          >
+            View Details
+          </Link>
+          <Link
+            href={`/read-blog/edit/${newsletter.id}`}
+            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+          >
+            Edit
+          </Link>
+        </div>
         <button
           onClick={() => onDelete(newsletter.id)}
           className="bg-red-500 text-white px-4 py-2 rounded-md"
