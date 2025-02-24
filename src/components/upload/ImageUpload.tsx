@@ -1,15 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Image from 'next/image';
+import { CircleX } from 'lucide-react';
 
 import type { RootState } from '@/redux/store';
-
 import { UploadDropzone } from '@/utils/uploadthing';
 import { setImageUrl, removeImage } from '@/redux/uploaded-files';
-
-import { CircleX } from 'lucide-react';
 
 const ImageUpload = () => {
   const dispatch = useDispatch();

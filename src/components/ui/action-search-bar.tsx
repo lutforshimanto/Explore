@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Send } from 'lucide-react';
+
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 function useDebounce<T>(value: T, delay: number = 500): T {
@@ -23,9 +24,11 @@ function useDebounce<T>(value: T, delay: number = 500): T {
 }
 
 interface ActionSearchBarProps {
+  // eslint-disable-next-line no-unused-vars
   onTabChange: (tab: 'posts' | 'photos') => void;
   activeTab: 'posts' | 'photos';
   actions?: Action[];
+  // eslint-disable-next-line no-unused-vars
   onSearch: (query: string) => void;
 }
 

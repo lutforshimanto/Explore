@@ -1,13 +1,12 @@
 'use client';
 
-import { uploadFiles } from '@/utils/uploadthing';
-
 import type { BlockNoteEditor, PartialBlock } from '@blocknote/core';
 import { useCreateBlockNote } from '@blocknote/react';
 import { BlockNoteView } from '@blocknote/mantine';
-
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { uploadFiles } from '@/utils/uploadthing';
 import { setHtml } from '@/redux/newsletterhtml';
 import type { RootState } from '@/redux/store';
 
@@ -60,18 +59,6 @@ const Editor: React.FC<EditorProps> = ({
   useEffect(() => {
     initialLoad(editor, html);
   }, []);
-  //   const convertHtmlToBlocks = async () => {
-  //     try {
-  //       const blocks = html ? await editor.tryParseHTMLToBlocks(html) : []; // Fallback to empty
-  //       setEditorContent(blocks);
-  //     } catch (error) {
-  //       console.error('Error parsing HTML to blocks:', error);
-  //       setEditorContent([]); // Fallback if parsing fails
-  //     }
-  //   };
-
-  //   convertHtmlToBlocks();
-  // }, [html]);
 
   return (
     <div className="-mx-[54px] my-4">

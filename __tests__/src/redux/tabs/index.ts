@@ -5,7 +5,7 @@ type TabState = {
 };
 
 const initialState: TabState = {
-  activeTab: 'posts'
+  activeTab: 'posts',
 };
 
 const tabsSlice = createSlice({
@@ -14,8 +14,8 @@ const tabsSlice = createSlice({
   reducers: {
     setActiveTab: (state, action) => {
       state.activeTab = action.payload;
-    }
-  }
+    },
+  },
 });
 
 export const { setActiveTab } = tabsSlice.actions;

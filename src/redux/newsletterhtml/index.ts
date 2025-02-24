@@ -35,7 +35,7 @@ const newsletterHtmlSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    resetHtml: (state) => {
+    resetHtml: state => {
       state.html = '';
       state.coverPhoto = null;
       state.title = null;
@@ -44,6 +44,12 @@ const newsletterHtmlSlice = createSlice({
   },
 });
 
-export const { setHtml, setCoverPhoto,
-  setTitle, setLoading, setError, resetHtml } = newsletterHtmlSlice.actions;
+export const {
+  setHtml,
+  setCoverPhoto,
+  setTitle,
+  setLoading,
+  setError,
+  resetHtml,
+} = newsletterHtmlSlice.actions;
 export default newsletterHtmlSlice.reducer;

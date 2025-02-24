@@ -15,7 +15,7 @@ const uploadedFilesSlice = createSlice({
     setImageUrl: (state, action: PayloadAction<string>) => {
       state.imageUrl = action.payload;
     },
-    removeImage: (state) => {
+    removeImage: state => {
       state.imageUrl = '';
     },
   },

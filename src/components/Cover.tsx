@@ -1,9 +1,11 @@
 import Image from 'next/image';
 import React from 'react';
+
 import { UploadButton } from '@/utils/uploadthing';
 
 interface CoverProps {
   url?: string;
+  // eslint-disable-next-line no-unused-vars
   setUrl: (_: string) => void;
 }
 

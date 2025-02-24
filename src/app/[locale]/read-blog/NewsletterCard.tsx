@@ -1,5 +1,6 @@
-import { Link } from '@/i18n/routing';
 import React from 'react';
+
+import { Link } from '@/i18n/routing';
 
 interface Newsletter {
   id: string;
@@ -10,6 +11,7 @@ interface Newsletter {
 
 interface NewsletterCardProps {
   newsletter: Newsletter;
+  // eslint-disable-next-line no-unused-vars
   onDelete: (id: string) => void;
 }
 

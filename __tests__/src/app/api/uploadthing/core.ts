@@ -1,9 +1,11 @@
-import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
+import { createUploadthing, type FileRouter } from 'uploadthing/next';
+import { UploadThingError } from 'uploadthing/server';
 
 const f = createUploadthing();
 
-const auth = (req: Request) => ({ id: "user-admin" });
+const auth = (req: Request) => ({ id: 'user-admin' });
 
 export const ourFileRouter = {
   imageUploader: f({
@@ -12,14 +14,14 @@ export const ourFileRouter = {
        * For full list of options and defaults, see the File Route API reference
        * @see https://docs.uploadthing.com/file-routes#route-config
        */
-      maxFileSize: "4MB",
+      maxFileSize: '4MB',
       maxFileCount: 1,
     },
   })
     .middleware(async ({ req }) => {
       const user = await auth(req);
 
-      if (!user) throw new UploadThingError("Unauthorized");
+      if (!user) throw new UploadThingError('Unauthorized');
 
       return { userId: user.id };
     })

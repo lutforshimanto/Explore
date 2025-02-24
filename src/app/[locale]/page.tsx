@@ -1,9 +1,12 @@
 'use client';
 
 import { useSelector, useDispatch } from 'react-redux';
+import { FileText, Image } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+
 import { setActiveTab } from '@/redux/tabs';
 import { RootState } from '@/redux/store';
-
 import FullwidthContainer from '@/components/common/containers/FullwidthContainer';
 import SectionContainer from '@/components/common/containers/SectionContainer';
 import PhotoCard from '@/components/PhotoCard/PhotoCard';
@@ -13,39 +16,42 @@ import PostCardSkeleton from '@/components/PostCard/PostCardSkeleton';
 import { Action, ActionSearchBar } from '@/components/ui/action-search-bar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileText, Image } from 'lucide-react';
-
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
 import Paginate from '@/components/common/pagination/Paginate';
-import { api } from '@/lib/api';
+// import { api } from '@/lib/api';
 
-type Post = {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-};
+import {
+  fetchPosts,
+  fetchPhotos,
+  type Post,
+  type Photo,
+} from '@utils/fetchHelpers';
 
-type Photo = {
-  albumId: number;
-  id: number;
-  title: string;
-  url: string;
-  thumbnailUrl: string;
-};
+// type Post = {
+//   userId: number;
+//   id: number;
+//   title: string;
+//   body: string;
+// };
 
-export async function fetchPosts(): Promise<Post[]> {
-  await new Promise(resolve => setTimeout(resolve, 5000));
-  const response = await api.get<Post[]>('/posts');
-  return response.data;
-}
+// type Photo = {
+//   albumId: number;
+//   id: number;
+//   title: string;
+//   url: string;
+//   thumbnailUrl: string;
+// };
 
-export async function fetchPhotos(): Promise<Photo[]> {
-  await new Promise(resolve => setTimeout(resolve, 5000));
-  const response = await api.get<Photo[]>('/photos');
-  return response.data;
-}
+// export async function fetchPosts(): Promise<Post[]> {
+//   await new Promise(resolve => setTimeout(resolve, 5000));
+//   const response = await api.get<Post[]>('/posts');
+//   return response.data;
+// }
+
+// export async function fetchPhotos(): Promise<Photo[]> {
+//   await new Promise(resolve => setTimeout(resolve, 5000));
+//   const response = await api.get<Photo[]>('/photos');
+//   return response.data;
+// }
 
 const truncateText = (text: string, maxLength: number): string => {
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;

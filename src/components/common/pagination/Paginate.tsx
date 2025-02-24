@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
+
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
@@ -14,6 +15,7 @@ import PostCard from '@/components/PostCard/PostCard';
 import PhotoCard from '@/components/PhotoCard/PhotoCard';
 import PostCardSkeleton from '@/components/PostCard/PostCardSkeleton';
 import PhotoCardSkeleton from '@/components/PhotoCard/PhotoCardSkeleton';
+
 import PaginationPrevious from './PaginationPrevious';
 import PaginationNext from './PaginationNext';
 
@@ -38,6 +40,7 @@ interface PaginatedContentProps {
   isLoadingPhotos: boolean;
   filteredContent: (Post | Photo)[];
   itemsPerPage: number;
+  // eslint-disable-next-line no-unused-vars
   onItemsPerPageChange: (itemsPerPage: string) => void;
 }
 

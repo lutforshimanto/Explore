@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -9,7 +10,6 @@ import {
   CardContent,
   CardFooter,
 } from '@/components/ui/card';
-import SectionContainer from '@/components/common/containers/SectionContainer';
 import { Link } from '@/i18n/routing';
 import Modal from '@/components/auth/Modal';
 
@@ -66,7 +66,7 @@ export default function SignInPage() {
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/auth/signup" className="text-blue-600 hover:underline">
               Sign up
             </Link>

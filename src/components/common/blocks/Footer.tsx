@@ -1,5 +1,6 @@
 import React from 'react';
 import { Mail, Twitter, Linkedin, Youtube } from 'lucide-react';
+
 import SectionContainer from '../containers/SectionContainer';
 
 const Footer = () => {
@@ -36,13 +37,13 @@ const Footer = () => {
               >
                 <Mail size={24} />
               </a>
-              <a href="#" className="hover:text-blue-400">
+              <a href="https://twitter.com" className="hover:text-blue-400">
                 <Twitter size={24} />
               </a>
-              <a href="#" className="hover:text-blue-400">
+              <a href="https://linkedin.com" className="hover:text-blue-400">
                 <Linkedin size={24} />
               </a>
-              <a href="#" className="hover:text-blue-400">
+              <a href="https://youtube.com" className="hover:text-blue-400">
                 <Youtube size={24} />
               </a>
             </div>
@@ -53,22 +54,22 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="hover:text-blue-400">
+                <a href="/about" className="hover:text-blue-400">
                   About Us
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400">
+                <a href="/terms" className="hover:text-blue-400">
                   Terms
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400">
+                <a href="/privacy-policy" className="hover:text-blue-400">
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400">
+                <a href="/contact" className="hover:text-blue-400">
                   Contact Us
                 </a>
               </li>

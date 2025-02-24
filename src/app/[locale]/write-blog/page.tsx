@@ -1,12 +1,12 @@
 'use client';
 
-import Cover from '@/components/Cover';
 import dynamic from 'next/dynamic';
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
+import Cover from '@/components/Cover';
 import { setTitle, setCoverPhoto, resetHtml } from '@/redux/newsletterhtml';
 import type { RootState } from '@/redux/store';
 
@@ -15,7 +15,7 @@ const WriteBlogPage = () => {
     (state: RootState) => state.newsletterHtml
   );
   const [coverUrl, setCoverUrl] = useState<string>(coverPhoto || '');
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [resetCount, setResetCount] = useState(0);
 
@@ -33,6 +33,7 @@ const WriteBlogPage = () => {
 
   const saveArticle = async () => {
     setLoading(true);
+
     setSuccess(false);
 
     try {
@@ -73,6 +74,7 @@ const WriteBlogPage = () => {
       const timer = setTimeout(() => setSuccess(false), 10000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [success]);
 
   return (

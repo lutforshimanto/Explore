@@ -6,14 +6,18 @@ import { useEffect, useState } from 'react';
 
 import '@blocknote/core/style.css';
 import '@blocknote/mantine/style.css';
+import { uploadFiles } from '@/utils/uploadthing';
 
 interface NewsletterEditorProps {
   initialContent: string;
+  // eslint-disable-next-line no-unused-vars
   onSave: (content: string) => void;
 }
 
 const NewsletterEditor: React.FC<NewsletterEditorProps> = ({
+  // eslint-disable-next-line react/prop-types
   initialContent,
+  // eslint-disable-next-line react/prop-types
   onSave,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
@@ -25,6 +29,10 @@ const NewsletterEditor: React.FC<NewsletterEditorProps> = ({
         content: [],
       },
     ],
+    uploadFile: async (file: File) => {
+      const [res] = await uploadFiles('imageUploader', { files: [file] });
+      return res.ufsUrl;
+    },
   });
 
   useEffect(() => {
