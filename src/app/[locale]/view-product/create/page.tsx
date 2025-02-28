@@ -70,16 +70,7 @@ const CreateProductPage: React.FC = () => {
             required
           />
         </div>
-        <div>
-          <label className="block mb-1">Image URL</label>
-          <input
-            type="text"
-            value={formData.image}
-            onChange={e => setFormData({ ...formData, image: e.target.value })}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
+
         <div>
           <label className="block mb-1">Product Image</label>
           {formData.image ? (

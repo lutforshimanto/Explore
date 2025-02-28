@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Star } from 'lucide-react';
 
+import { Link } from '@/i18n/routing';
+
 import ProductCardSkeleton from '../ProductCardSkeleton';
 
 interface Product {
@@ -69,6 +71,12 @@ const ProductDetailPage: React.FC = () => {
       <p className="text-gray-500">
         Added: {new Date(product.createdAt).toLocaleDateString()}
       </p>
+      <Link
+        href="/view-product"
+        className="bg-gray-500 text-white px-4 py-2 my-2 rounded hover:bg-gray-600 inline-block text-center"
+      >
+        Back to Products
+      </Link>
     </div>
   );
 };
