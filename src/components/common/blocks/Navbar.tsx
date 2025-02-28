@@ -3,12 +3,12 @@
 import { useTranslations } from 'next-intl'; // External imports
 
 import { Link } from '@/i18n/routing'; // Alias imports
+import { Button } from '@/components/ui/button';
 
 import LanguageSwitcher from '../core/LanguageSwitcher';
 import Hamburger from '../core/Hamburger';
 import ThemeSwitcher from '../core/ThemeSwitcher'; // Relative imports
 import SectionContainer from '../containers/SectionContainer';
-import { Button } from '@/components/ui/button';
 
 export default function Navbar() {
   const t = useTranslations('Navbar');
@@ -19,6 +19,7 @@ export default function Navbar() {
     { href: '/contact', label: t('contact') },
     { href: '/write-blog', label: t('write') },
     { href: '/read-blog', label: t('read') },
+    { href: '/view-product', label: t('product') },
   ];
 
   return (

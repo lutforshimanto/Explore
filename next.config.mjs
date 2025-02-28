@@ -10,7 +10,6 @@ const nextConfig = {
     },
   },
   images: {
-    domains: ['placehold.jp'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -26,6 +25,10 @@ const nextConfig = {
       },
       {
         hostname: '1t2k916rlb.ufs.sh',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.jp',
       },
     ],
   },
