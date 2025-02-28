@@ -39,7 +39,7 @@ const ProductPage: React.FC = () => {
       try {
         const response = await fetch('http://localhost:3000/api/products', {
           next: {
-            revalidate: 10, // Revalidate every 3 seconds
+            revalidate: 10,
           },
         });
 
@@ -58,7 +58,7 @@ const ProductPage: React.FC = () => {
     };
 
     fetchProducts();
-  }, [dispatch]);
+  }, []);
 
   const handleDelete = async (id: string) => {
     try {
