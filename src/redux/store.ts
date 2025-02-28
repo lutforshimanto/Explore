@@ -5,6 +5,7 @@ import counterReducer from './counter';
 import tabsReducer from './tabs';
 import newsletterHtmlReducer from './newsletterhtml';
 import uploadedFilesReducer from './uploaded-files';
+import productReducer from './product';
 // -----x----- reducers -----x----- //
 
 const rootReducer = combineReducers({
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   tabs: tabsReducer,
   newsletterHtml: newsletterHtmlReducer,
   uploadedFiles: uploadedFilesReducer,
+  product: productReducer,
 });
 
 const preloadedState = () => {

@@ -3,6 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
+import Image from 'next/image';
+import { CircleX } from 'lucide-react';
+
+import { Link } from '@/i18n/routing';
+import { UploadDropzone } from '@/utils/uploadthing';
 
 import ProductCardSkeleton from '../../ProductCardSkeleton';
 
@@ -27,6 +32,10 @@ const EditProductPage: React.FC = () => {
     rate: 0,
     stock: 0,
   });
+
+  const handleRemoveImage = () => {
+    setFormData(prev => ({ ...prev, image: '' }));
+  };
 
   useEffect(() => {
     if (id) {
@@ -105,6 +114,43 @@ const EditProductPage: React.FC = () => {
           />
         </div>
         <div>
+          <label className="block mb-1">Product Image</label>
+          {formData.image ? (
+            <div className="mt-4 space-y-4 bg-gray-50 rounded-xl p-6 shadow-sm relative group">
+              <button
+                onClick={handleRemoveImage}
+                type="button"
+                className="absolute -top-2 -right-2 bg-gray-400 text-white w-6 h-6 rounded-full 
+                flex items-center justify-center hover:bg-red-700 transition-all duration-200 
+                shadow-md opacity-0 group-hover:opacity-100"
+                aria-label="Remove image"
+              >
+                <CircleX size={24} />
+              </button>
+              <div className="mt-2">
+                <Image
+                  src={formData.image}
+                  alt="Product Image"
+                  width={500}
+                  height={300}
+                  className="rounded-lg"
+                />
+              </div>
+            </div>
+          ) : (
+            <UploadDropzone
+              endpoint="imageUploader"
+              className="border-dashed border-2 border-gray-300 rounded-lg"
+              onClientUploadComplete={res => {
+                setFormData(prev => ({ ...prev, image: res[0].ufsUrl }));
+              }}
+              onUploadError={(error: Error) => {
+                console.log('Upload ERROR. Details: ', error.message);
+              }}
+            />
+          )}
+        </div>
+        <div>
           <label className="block mb-1">Rate</label>
           <input
             type="number"
@@ -127,12 +173,20 @@ const EditProductPage: React.FC = () => {
             className="w-full p-2 border rounded"
           />
         </div>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Update Product
-        </button>
+        <div className="flex gap-4">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Update Product
+          </button>
+          <Link
+            href="/view-product"
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 inline-block text-center"
+          >
+            Back to Products
+          </Link>
+        </div>
       </form>
     </div>
   );

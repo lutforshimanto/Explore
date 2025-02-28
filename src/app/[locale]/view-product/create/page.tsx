@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
 import { CircleX } from 'lucide-react';
@@ -10,7 +9,6 @@ import { Link } from '@/i18n/routing';
 import { UploadDropzone } from '@/utils/uploadthing';
 
 const CreateProductPage: React.FC = () => {
-  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -30,7 +28,6 @@ const CreateProductPage: React.FC = () => {
 
     try {
       await axios.post('http://localhost:3000/api/products', formData);
-      router.push('/view-product');
     } catch (error) {
       console.error('Error creating product:', error);
     } finally {

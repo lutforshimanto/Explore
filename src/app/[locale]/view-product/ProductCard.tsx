@@ -1,7 +1,9 @@
 import React from 'react';
 import { Star } from 'lucide-react';
+import { useDispatch } from 'react-redux';
 
 import { Link } from '@/i18n/routing';
+import { setSelectedProduct } from '@/redux/product';
 
 interface Product {
   id: string;
@@ -11,6 +13,7 @@ interface Product {
   rate: number;
   stock: number;
   createdAt: string;
+  updatedAt: string;
 }
 
 interface ProductCardProps {
@@ -20,6 +23,11 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete }) => {
+  const dispatch = useDispatch();
+
+  const handleSelectProduct = () => {
+    dispatch(setSelectedProduct(product));
+  };
   return (
     <div className="card mb-4 p-4 border rounded-md shadow-md">
       <img
@@ -42,12 +50,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete }) => {
           <Link
             href={`/view-product/${product.id}`}
             className="bg-blue-500 text-white px-4 py-2 rounded-md"
+            onClick={handleSelectProduct}
           >
             View Details
           </Link>
           <Link
             href={`/view-product/edit/${product.id}`}
             className="bg-yellow-500 text-white px-4 py-2 rounded-md"
+            onClick={handleSelectProduct}
           >
             Edit
           </Link>

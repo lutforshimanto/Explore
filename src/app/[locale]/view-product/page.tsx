@@ -1,8 +1,16 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 
+import {
+  setProducts,
+  deleteProduct,
+  setLoading,
+  setError,
+} from '@/redux/product';
+import type { RootState } from '@/redux/store';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Link } from '@/i18n/routing';
 
@@ -17,33 +25,41 @@ interface Product {
   rate: number;
   stock: number;
   createdAt: string;
+  updatedAt: string;
 }
 
 const ProductPage: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { products, isLoading, error } = useSelector(
+    (state: RootState) => state.product
+  );
 
   useEffect(() => {
     const fetchProducts = async () => {
+      dispatch(setLoading(true));
       try {
         const response = await axios.get('http://localhost:3000/api/products');
-        setProducts(response.data);
+        dispatch(setProducts(response.data));
+        dispatch(setError(null));
       } catch (error) {
         console.error('Error fetching products:', error);
+        dispatch(setError('Failed to fetch products'));
       } finally {
-        setLoading(false);
+        dispatch(setLoading(false));
       }
     };
 
     fetchProducts();
-  }, []);
+  }, [dispatch]);
 
   const handleDelete = async (id: string) => {
     try {
       await axios.delete(`http://localhost:3000/api/products/${id}`);
-      setProducts(products.filter(product => product.id !== id));
+      dispatch(deleteProduct(id));
+      dispatch(setError(null));
     } catch (error) {
       console.error('Error deleting product:', error);
+      dispatch(setError('Failed to delete product'));
     }
   };
 
@@ -55,15 +71,18 @@ const ProductPage: React.FC = () => {
       >
         + Add new product
       </Link>
+      {error && (
+        <div className="text-red-500 m-2 p-2 bg-red-50 rounded">{error}</div>
+      )}
       <ScrollArea className="h-[700px] rounded-md border m-2 p-4">
-        {loading ? (
+        {isLoading ? (
           <>
             <ProductCardSkeleton />
             <ProductCardSkeleton />
             <ProductCardSkeleton />
           </>
         ) : (
-          products.map(product => (
+          products.map((product: Product) => (
             <ProductCard
               key={product.id}
               product={product}
