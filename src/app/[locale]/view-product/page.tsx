@@ -37,7 +37,12 @@ const ProductPage: React.FC = () => {
     const fetchProducts = async () => {
       dispatch(setLoading(true));
       try {
-        const response = await fetch('http://localhost:3000/api/products');
+        const response = await fetch('http://localhost:3000/api/products', {
+          next: {
+            revalidate: 10, // Revalidate every 3 seconds
+          },
+        });
+
         if (!response.ok) {
           throw new Error('Failed to fetch products');
         }
