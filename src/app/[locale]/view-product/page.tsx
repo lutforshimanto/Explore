@@ -2,7 +2,6 @@
 
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
 
 import {
   setProducts,
@@ -38,8 +37,12 @@ const ProductPage: React.FC = () => {
     const fetchProducts = async () => {
       dispatch(setLoading(true));
       try {
-        const response = await axios.get('http://localhost:3000/api/products');
-        dispatch(setProducts(response.data));
+        const response = await fetch('http://localhost:3000/api/products');
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        dispatch(setProducts(data));
         dispatch(setError(null));
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -54,7 +57,14 @@ const ProductPage: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:3000/api/products/${id}`);
+      const response = await fetch(`http://localhost:3000/api/products/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete product');
+      }
+
       dispatch(deleteProduct(id));
       dispatch(setError(null));
     } catch (error) {

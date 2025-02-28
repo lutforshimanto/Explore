@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import axios from 'axios';
 import { Star } from 'lucide-react';
 
 import ProductCardSkeleton from '../ProductCardSkeleton';
@@ -26,10 +25,14 @@ const ProductDetailPage: React.FC = () => {
     if (id) {
       const fetchProduct = async () => {
         try {
-          const response = await axios.get(
+          const response = await fetch(
             `http://localhost:3000/api/products/${id}`
           );
-          setProduct(response.data);
+          if (!response.ok) {
+            throw new Error('Failed to fetch product');
+          }
+          const data = await response.json();
+          setProduct(data);
         } catch (error) {
           console.error('Error fetching product:', error);
         } finally {

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import axios from 'axios';
 import Image from 'next/image';
 import { CircleX } from 'lucide-react';
 
@@ -27,7 +26,17 @@ const CreateProductPage: React.FC = () => {
     setLoading(true);
 
     try {
-      await axios.post('http://localhost:3000/api/products', formData);
+      const response = await fetch('http://localhost:3000/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create product');
+      }
     } catch (error) {
       console.error('Error creating product:', error);
     } finally {

@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import axios from 'axios';
 import Image from 'next/image';
 import { CircleX } from 'lucide-react';
 
@@ -41,16 +40,20 @@ const EditProductPage: React.FC = () => {
     if (id) {
       const fetchProduct = async () => {
         try {
-          const response = await axios.get(
+          const response = await fetch(
             `http://localhost:3000/api/products/${id}`
           );
-          setProduct(response.data);
+          if (!response.ok) {
+            throw new Error('Failed to fetch product');
+          }
+          const data = await response.json();
+          setProduct(data);
           setFormData({
-            name: response.data.name,
-            description: response.data.description,
-            image: response.data.image,
-            rate: response.data.rate,
-            stock: response.data.stock,
+            name: data.name,
+            description: data.description,
+            image: data.image,
+            rate: data.rate,
+            stock: data.stock,
           });
         } catch (error) {
           console.error('Error fetching product:', error);
@@ -65,10 +68,23 @@ const EditProductPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      await axios.put(`http://localhost:3000/api/products/${id}`, formData);
+      const response = await fetch(`http://localhost:3000/api/products/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update product');
+      }
     } catch (error) {
       console.error('Error updating product:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
