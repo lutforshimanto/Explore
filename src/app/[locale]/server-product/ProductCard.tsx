@@ -1,12 +1,13 @@
 // ProductCard.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Star } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 
 import { Link } from '@/i18n/routing';
 import { setSelectedProduct } from '@/redux/product';
+// import StockDisplay from './StockDisplay';
 
 interface Product {
   id: string;
@@ -24,44 +25,8 @@ interface ProductCardProps {
   // eslint-disable-next-line no-unused-vars
   onDelete: (id: string) => void;
 }
-
 const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete }) => {
   const dispatch = useDispatch();
-  const [stock, setStock] = useState(product.stock);
-  const [isStockLoading, setIsStockLoading] = useState(false);
-
-  // Use this function to fetch only the stock
-  const fetchStock = async () => {
-    setIsStockLoading(true);
-    try {
-      // Use the dedicated stock endpoint for faster updates
-      const response = await fetch(
-        `http://localhost:3000/api/products/stock/${product.id}`
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch stock');
-      }
-
-      const data = await response.json();
-      setStock(data.stock); // Assuming the endpoint returns { stock: number }
-    } catch (error) {
-      console.error('Error fetching stock:', error);
-    } finally {
-      setIsStockLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    // Fetch stock immediately when component mounts
-    fetchStock();
-
-    // Set up an interval to fetch stock every 3 seconds
-    const intervalId = setInterval(fetchStock, 3000);
-
-    // Clean up the interval when component unmounts
-    return () => clearInterval(intervalId);
-  }, [product.id]);
 
   const handleSelectProduct = () => {
     dispatch(setSelectedProduct(product));
@@ -80,14 +45,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete }) => {
         <Star className="text-yellow-400 w-5 h-5" />
         <span className="ml-1">{product.rate}</span>
       </div>
-      <p className="text-gray-500 mb-2">
-        Stock:{' '}
-        {isStockLoading ? (
-          <span className="inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
-        ) : (
-          stock
-        )}
-      </p>
+
+      {/* Using the stock display component with server-side revalidation */}
+      {/* <StockDisplay productId={product.id} /> */}
+
       <p className="text-gray-500 mb-4">
         Added: {new Date(product.createdAt).toLocaleDateString()}
       </p>
