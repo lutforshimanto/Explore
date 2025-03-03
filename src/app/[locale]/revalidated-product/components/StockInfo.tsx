@@ -1,27 +1,30 @@
-import { cache } from 'react';
+'use client';
+
+import useSWR from 'swr';
 
 interface StockInfoProps {
   productId: string;
 }
 
-const getStock = cache(async (productId: string) => {
-  const response = await fetch(
+const fetcher = (url: string) => fetch(url).then(r => r.json());
+
+const StockInfo = ({ productId }: StockInfoProps) => {
+  const { data, error, isLoading } = useSWR(
     `http://localhost:3000/api/products/stock/${productId}`,
+    fetcher,
     {
-      next: { revalidate: 5 },
+      revalidateOnFocus: true,
+      // refreshInterval: 20000,
     }
   );
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch stock information');
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
-
-  return response.json();
-});
-
-export default async function StockInfo({ productId }: StockInfoProps) {
-  const stockData = await getStock(productId);
-  const stockCount = stockData.stock;
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+  const stockCount = data?.stock;
 
   let stockStatus;
   let statusColor;
@@ -47,4 +50,6 @@ export default async function StockInfo({ productId }: StockInfoProps) {
       </div>
     </div>
   );
-}
+};
+
+export default StockInfo;

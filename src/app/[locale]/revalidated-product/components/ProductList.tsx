@@ -4,7 +4,7 @@ import ProductCard from './ProductCard';
 
 async function getProducts() {
   const response = await fetch('http://localhost:3000/api/products', {
-    next: { revalidate: 10 },
+    next: { revalidate: 60 },
   });
 
   if (!response.ok) {
