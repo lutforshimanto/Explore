@@ -13,8 +13,8 @@ const StockInfo = ({ productId }: StockInfoProps) => {
     `http://localhost:3000/api/products/stock/${productId}`,
     fetcher,
     {
-      revalidateOnFocus: true,
-      // refreshInterval: 20000,
+      revalidateOnFocus: false,
+      refreshInterval: 5000,
     }
   );
 
