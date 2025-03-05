@@ -1,25 +1,20 @@
 'use client';
+import Link from 'next/link';
 
-import { useTranslations } from 'next-intl'; // External imports
-
-import { Link } from '@/i18n/routing'; // Alias imports
 import { Button } from '@/components/ui/button';
 
-import LanguageSwitcher from '../core/LanguageSwitcher';
 import Hamburger from '../core/Hamburger';
 import ThemeSwitcher from '../core/ThemeSwitcher'; // Relative imports
 import SectionContainer from '../containers/SectionContainer';
 
 export default function Navbar() {
-  const t = useTranslations('Navbar');
-
   const navLinks = [
-    { href: '/', label: t('home') },
-    { href: '/about', label: t('about') },
-    { href: '/contact', label: t('contact') },
-    { href: '/write-blog', label: t('write') },
-    { href: '/read-blog', label: t('read') },
-    { href: '/view-product', label: t('product') },
+    { href: '/', label: 'home' },
+    { href: '/about', label: 'about' },
+    { href: '/contact', label: 'contact' },
+    { href: '/write-blog', label: 'write' },
+    { href: '/read-blog', label: 'read' },
+    { href: '/view-product', label: 'product' },
   ];
 
   return (
@@ -62,7 +57,6 @@ export default function Navbar() {
                 </Button>
               </Link>
               <ThemeSwitcher />
-              <LanguageSwitcher />
               <Hamburger />
             </div>
           </div>
